@@ -1,0 +1,96 @@
+#!/home/ahlborn/anaconda3/envs/gpd/bin/python3
+
+
+from sqlalchemy import text
+import  datetime as dt
+import pandas as pd
+import numpy as np
+import math
+from sqlalchemy import create_engine
+import sys
+import colorsys
+import re
+from  pathlib import Path
+
+db_connection_str = 'mysql+pymysql://ahlborn:kalli@localhost/hist'
+db_connection = create_engine(db_connection_str)
+
+q_pg = text("select * from pg".format())
+q_p = text("select * from p".format())
+
+p = pd.read_sql(q_p, con=db_connection)
+pg = pd.read_sql(q_pg, con=db_connection)
+
+
+p['dat'] = pd.to_datetime(p['datum'], format='%d.%m.%Y', errors='coerce')
+pg['adat'] = pd.to_datetime(pg['anfang'], format='%d.%m.%Y', errors='coerce')
+
+Institute = ['ph1', 'ph2', 'ph3', 'ph4', 'ap', 'tp', 'gp', 'rp', 'nld' , 'strömungsphysik']
+
+for inst in Institute:
+    print (inst)
+    Gutachter = pg.query('institut == @inst')
+    Gutachter = Gutachter.sort_values(by='adat')
+    #print (Gutachter)
+    # test if Zielpfad exists else create new gname
+    Zielpfad = "/home/ahlborn/Documents/HUGO/Fakserver/content/de/{:s}/".format(inst)
+    Path(Zielpfad).mkdir(parents=True, exist_ok=True)
+
+    for i,r in Gutachter.iterrows():
+        id = r.iloc[0]
+        gname = r.iloc[1]
+        gvorname = r.iloc[2]
+        fak = r.iloc[3]
+        institut = r.iloc[5]
+        prom_nr = r.iloc[4]
+        g_bild = "/Gutachter/{:04d}.jpg".format(id)
+        print (id, gname, gvorname)
+
+        ## create _index.md in root of institute
+        #Datei = Zielpfad + "_index.md"
+        #with open(Datei, 'w') as f:
+        #    # front matter
+        #    print("---", file=f)
+        #    print("title: {:s}".format(inst), file=f)
+        #    print("---", file=f)
+        #    text = "\n*{:s}*".format(inst)
+        #    print(text, file=f)
+        #    f.close()
+        
+        # test if Zielpfad für Gutachter exists else create new gname
+        Ziel_Gutachter = Zielpfad + "promotionen/{:s}_{:d}/".format(gname,id)
+        Path(Ziel_Gutachter).mkdir(parents=True, exist_ok=True)
+        Ziel_Historie = Zielpfad + "historie/"
+        Path(Ziel_Historie).mkdir(parents=True, exist_ok=True)
+        
+        Promovenden = p.query('g1nr == @id and art == "PROM"')
+        Promovenden['dat'] = pd.to_datetime(Promovenden['datum'], format='%d.%m.%Y', errors='coerce')
+        Promovenden = Promovenden.sort_values(by='dat')
+        Promovenden['pdat'] = Promovenden['dat'].dt.strftime('%d.%m.%Y')
+
+        Datei = Ziel_Gutachter + "index.md"
+        with open(Datei, 'w') as f:
+            # front matter
+            print("---", file=f)
+            print("title: {:s}".format(gname), file=f)
+            print("hideSummary: true", file=f)  # das verhindert einen störenden Beschreibungstext
+            print("---\n", file=f)
+            print("{{< figure src=\"" + g_bild + "\" title=\"Gutachter: {:s} {:s}\" width=\"400\"".format(gvorname, gname) + " >}}\n", file=f)
+
+            for lfdnr,d in Promovenden.iterrows():
+            
+                vorname = d['vorname']
+                name = d['name']
+                name = d['name']
+                datum = d['pdat']
+                adat = d['datum']
+                titel = d['titel']
+                nr = d['nr']
+                p_bild = "/Doktoranden/doc_{:s}_{:s}_{:d}.jpg".format(name,vorname,nr)
+                print ("-------------------------------", file=f)
+                print("{{< figure src=\"" + p_bild + "\" title=\"\" width=\"200\"".format(vorname, name) + " >}}\n", file=f)
+                Ausgabe = "- **{:} {:s}**  \n{:}  \n{:}".format(vorname,name,datum,titel)
+                print (Ausgabe, file=f)
+
+            f.close()   
+                

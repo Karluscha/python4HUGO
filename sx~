@@ -1,0 +1,1 @@
+select distinct path from Fotos where path like '%Fotoarchiv%%Dias%';

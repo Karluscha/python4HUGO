@@ -1,0 +1,1 @@
+select path,path,fid from Fotos where path like "%Diasammmlung%";

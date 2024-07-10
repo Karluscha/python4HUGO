@@ -1,0 +1,51 @@
+
+/* ALLGEMEIN */
+html {}
+body {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	text-align: left;
+	text-decoration: none;
+	margin: 20px;
+	font-size: 12pt;
+	background-color: #def;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+h1 {font-size: 12pt;}
+
+
+a {        text-decoration: none; }
+a:link {color: #246;}
+a:visited {color: #33a;}
+a:hover {color: #432;}
+a:active {color: #f86;}
+
+table {width: 1800px; boder: 2px solid #44bbbb;}
+th,td { 
+    padding: 0 .5em;
+    border-bottom: 1px #44bbbb;
+    text-align: left;
+}
+
+.grid-container {
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: auto auto;
+    background-color: #eeeeee;
+    padding: 10px;
+}
+
+
+.grid-item {
+    border: 1px solid rgba(200, 00 , 250,0.8);
+    padding: 10px;
+    font-size: 30px;
+    text-align: left;
+}
+
