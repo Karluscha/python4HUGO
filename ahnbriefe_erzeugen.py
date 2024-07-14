@@ -38,7 +38,7 @@ ahnbriefe['jahr'] = ahnbriefe['dat'].dt.year
 #print(ahnbriefe.dtypes)
 
 #Jahre = range(1940, 1965)
-Jahre = [1948, 1949]
+Jahre = [1942]
 
 for Jahr in Jahre:
     print("Erzeuge Briefliste für das Jahr {:d}".format(Jahr))

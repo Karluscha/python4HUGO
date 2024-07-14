@@ -1,2 +1,0 @@
-java -jar saxon-he-10.3.jar -o:a78.html A78.xml  A78.xsl
-

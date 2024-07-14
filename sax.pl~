@@ -1,5 +1,0 @@
-#!/usr/bin/perl
-
-my $brfnr = $ARGV[0];
-printf "erzeuge html von Brief Nr. %d\n",$brfnr;
-
