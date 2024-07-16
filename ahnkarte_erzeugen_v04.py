@@ -69,34 +69,42 @@ def Kinder (anr, g):
 
 
 def P_Info (anr):
-    K_geb=""
+    if anr == 0:
+        return({'anr': 0, 'Name': '', 'Vorname': '', 'geschlecht': '', 
+                'Vater': '', 'Mutter': '', 'geb': '', 'ort': ''})
     info = {}
     K  = anam.query('anr == @anr')
-    K_n = ""
-    K_v = ""
-    K_g = ""
-    for i,r in K.iterrows():
-        K_n = r.loc['name']
-        K_v = r.loc['vornamen']
-        K_g = r.loc['geschlecht']
+    if K.empty:
+       return({'anr': 0, 'Name': '', 'Vorname': '', 'geschlecht': '', 
+                'Vater': '', 'Mutter': '', 'geb': '', 'ort': ''})
+    else:
+        for i,r in K.iterrows():
+            K_n = r.loc['name']
+            K_v = r.loc['vornamen']
+            K_g = r.loc['geschlecht']
     Leben = aleben.query("anr == @anr")
-    K_gebr = ""
-    K_geb  = ""
-    K_ort =""
-    for i,r in Leben.iterrows():
-        L_v = r.loc['vorgnr']
-        if L_v == 1:
-            K_gebr = r['datum']
-            K_geb = Datum_anpassen(K_gebr)
-            K_ort = r['ort']
+    if Leben.empty:
+       return({'anr': 0, 'Name': '', 'Vorname': '', 'geschlecht': '', 
+                'Vater': '', 'Mutter': '', 'geb': '', 'ort': ''})
+    else:
+        for i,r in Leben.iterrows():
+            L_v = r.loc['vorgnr']
+            if L_v == 1:
+                K_gebr = r['datum']
+                K_geb = Datum_anpassen(K_gebr)
+                print('Kgeb = ',K_geb)
+                K_ort = r['ort']
+            else:
+                K_geb = ""
+                K_ort = ""
     Eltern = alink.query("anr == @anr")
-    V = 0
-    M = 0
-    for i,r in Eltern.iterrows():
-        V = r.loc['vater']
-        M = r.loc['mutter']
- 
-
+    if Eltern.empty:
+        V = 0
+        M = 0
+    else:
+        for i,r in Eltern.iterrows():
+            V = r.loc['vater']
+            M = r.loc['mutter']
     info.update({'anr': anr })
     info.update({'Name': K_n })
     info.update({'Vorname': K_v })

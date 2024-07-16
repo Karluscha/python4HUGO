@@ -53,13 +53,13 @@ facs_path = "/ahnbriefe/"
 db_connection_str = 'mysql+pymysql://ahlborn:kalli@localhost/ahnen'
 db_connection = create_engine(db_connection_str)
 
-jahr = 1955
+jahr = 1945
 
                 #z = printSubsInDelimiters(z)
                 #print(z)
                 #exit()
 
-q_ahnbriefe  = text("select * from ahnbriefe where year(adat)={:d}".format(jahr))
+q_ahnbriefe  = text("select * from ahnbriefe where year(adat)={:d} order by adat".format(jahr))
 ahnbriefe =  pd.read_sql(q_ahnbriefe, con=db_connection)
 
 q_anam  = text("select * from anam".format())
@@ -136,7 +136,8 @@ for i,v in ahnbriefe.iterrows():
          <div class="grid-container">
 '''.format(css_file)
 
-    Zielpfad = "/home/ahlborn/Documents/HUGO/Fam2/static/ahnbriefe"                #z = printSubsInDelimiters(z)
+    Zielpfad = "/home/ahlborn/Documents/HUGO/Fam2/static/ahnbriefe"                
+    #z = printSubsInDelimiters(z)
                 #print(z)
                 #exit()
 
@@ -157,7 +158,7 @@ for i,v in ahnbriefe.iterrows():
             z = "<br>" + z1.rstrip('\n')
             if "#A" in z:
                 z = replace_link(z)
-            if "#newpage" in z:
+            if "#newpage" in z or "#NEWPAGE" in z:
                 z = ""
                 print("</div>")
                 seite = seite + 1
@@ -166,10 +167,7 @@ for i,v in ahnbriefe.iterrows():
                 html_newpage = '''
                 </div>
                 <div class="grid-item"><img width="1200" src="{:s}{:s}{:d}.jpg"></div>
-                <div class="grid-item">                #z = printSubsInDelimiters(z)
-                #print(z)
-                #exit()
-
+                <div class="grid-item"> 
                 '''.format(facs_path, facs_file, seite)
                 print(html_newpage, file=f)
                 #z = printSubsInDelimiters(z)
